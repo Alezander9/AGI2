@@ -1,0 +1,12 @@
+name: Awake
+
+on:
+  repository_dispatch:
+    types: [wake]
+
+jobs:
+  run:
+    runs-on: self-hosted
+    timeout-minutes: 60
+    steps:
+      - run: ./wake.sh "${{ github.event.client_payload.prompt }}"
