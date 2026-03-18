@@ -21,17 +21,12 @@ mkdir -p "$RUNNER_DIR" && cd "$RUNNER_DIR"
 RUNNER_VERSION=$(curl -s https://api.github.com/repos/actions/runner/releases/latest | jq -r .tag_name | sed 's/^v//')
 curl -o actions-runner.tar.gz -L "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
 tar xzf actions-runner.tar.gz && rm actions-runner.tar.gz
-
-useradd -m -s /bin/bash theo || true
-chown -R theo:theo "$RUNNER_DIR"
-su - theo -c "cd $RUNNER_DIR && ./config.sh --url https://github.com/$REPO --token $TOKEN --unattended --name theo-vps"
-./svc.sh install theo
+RUNNER_ALLOW_RUNASROOT=1 ./config.sh --url "https://github.com/$REPO" --token "$TOKEN" --unattended --name theo-vps
+./svc.sh install
 ./svc.sh start
 
-REPO_DIR=/opt/theo
-git clone "https://github.com/$REPO.git" "$REPO_DIR"
-chown -R theo:theo "$REPO_DIR"
+git clone "https://github.com/$REPO.git" /opt/theo
 
 echo "Setup complete. Now:"
 echo "  1. Create /opt/theo/.env with your secrets"
-echo "  2. Run: cd /opt/theo && ./vps/sync-schedule.sh"
+echo "  2. Run: cd /opt/theo && bash vps/sync-schedule.sh"

@@ -18,6 +18,6 @@ while IFS= read -r line; do
   CRON+="$min $hour * * * $CMD"$'\n'
 done < calendar/schedule.txt
 
-echo "$CRON" | crontab -u theo -
+echo "$CRON" | crontab -
 echo "Installed crontab:"
-crontab -u theo -l
+crontab -l
